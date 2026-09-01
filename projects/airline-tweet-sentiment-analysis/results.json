@@ -1,0 +1,307 @@
+{
+  "n_rows": 14640,
+  "n_cols": 15,
+  "n_cells": 219600,
+  "missing_top5": {
+    "negativereason_gold": 14608,
+    "airline_sentiment_gold": 14600,
+    "tweet_coord": 13621,
+    "negativereason": 5462,
+    "user_timezone": 4820
+  },
+  "airline_popularity": {
+    "United": 3822,
+    "US Airways": 2913,
+    "American": 2759,
+    "Southwest": 2420,
+    "Delta": 2222,
+    "Virgin America": 504
+  },
+  "location_match_rate": 0.695,
+  "top_states_per_airline": {
+    "American": [
+      [
+        "TX",
+        215
+      ],
+      [
+        "NY",
+        199
+      ],
+      [
+        "CA",
+        153
+      ],
+      [
+        "IL",
+        83
+      ],
+      [
+        "MA",
+        64
+      ]
+    ],
+    "Delta": [
+      [
+        "NY",
+        433
+      ],
+      [
+        "MA",
+        195
+      ],
+      [
+        "CA",
+        77
+      ],
+      [
+        "FL",
+        56
+      ],
+      [
+        "DC",
+        40
+      ]
+    ],
+    "Southwest": [
+      [
+        "TX",
+        138
+      ],
+      [
+        "CA",
+        125
+      ],
+      [
+        "TN",
+        94
+      ],
+      [
+        "NY",
+        81
+      ],
+      [
+        "FL",
+        76
+      ]
+    ],
+    "US Airways": [
+      [
+        "NY",
+        150
+      ],
+      [
+        "DC",
+        116
+      ],
+      [
+        "PA",
+        105
+      ],
+      [
+        "MA",
+        96
+      ],
+      [
+        "CA",
+        87
+      ]
+    ],
+    "United": [
+      [
+        "CA",
+        310
+      ],
+      [
+        "NY",
+        248
+      ],
+      [
+        "IL",
+        136
+      ],
+      [
+        "TX",
+        118
+      ],
+      [
+        "NJ",
+        96
+      ]
+    ],
+    "Virgin America": [
+      [
+        "CA",
+        110
+      ],
+      [
+        "NY",
+        58
+      ],
+      [
+        "TX",
+        24
+      ],
+      [
+        "DC",
+        13
+      ],
+      [
+        "MA",
+        12
+      ]
+    ]
+  },
+  "logistic_regression": {
+    "negative": {
+      "precision": 0.8954854669140383,
+      "recall": 0.7891008174386921,
+      "f1-score": 0.8389339513325609,
+      "support": 1835.0
+    },
+    "neutral": {
+      "precision": 0.5364077669902912,
+      "recall": 0.7129032258064516,
+      "f1-score": 0.6121883656509696,
+      "support": 620.0
+    },
+    "positive": {
+      "precision": 0.6858316221765913,
+      "recall": 0.7061310782241015,
+      "f1-score": 0.6958333333333333,
+      "support": 473.0
+    },
+    "accuracy": 0.7595628415300546,
+    "macro avg": {
+      "precision": 0.7059082853603069,
+      "recall": 0.7360450404897484,
+      "f1-score": 0.7156518834389546,
+      "support": 2928.0
+    },
+    "weighted avg": {
+      "precision": 0.7855829933779946,
+      "recall": 0.7595628415300546,
+      "f1-score": 0.7678038777546164,
+      "support": 2928.0
+    }
+  },
+  "naive_bayes": {
+    "negative": {
+      "precision": 0.7117046347211312,
+      "recall": 0.987465940054496,
+      "f1-score": 0.8272083999086967,
+      "support": 1835.0
+    },
+    "neutral": {
+      "precision": 0.7562189054726368,
+      "recall": 0.24516129032258063,
+      "f1-score": 0.3702801461632156,
+      "support": 620.0
+    },
+    "positive": {
+      "precision": 0.8397790055248618,
+      "recall": 0.321353065539112,
+      "f1-score": 0.4648318042813456,
+      "support": 473.0
+    },
+    "accuracy": 0.7226775956284153,
+    "macro avg": {
+      "precision": 0.76923418190621,
+      "recall": 0.5179934319720628,
+      "f1-score": 0.5541067834510859,
+      "support": 2928.0
+    },
+    "weighted avg": {
+      "precision": 0.7418200805053178,
+      "recall": 0.7226775956284153,
+      "f1-score": 0.6719148046033908,
+      "support": 2928.0
+    }
+  },
+  "vader_summary_top3": {
+    "United": {
+      "positive": 0.41,
+      "negative": 0.373,
+      "neutral": 0.217
+    },
+    "US Airways": {
+      "positive": 0.361,
+      "negative": 0.413,
+      "neutral": 0.226
+    },
+    "American": {
+      "positive": 0.398,
+      "negative": 0.388,
+      "neutral": 0.214
+    }
+  },
+  "lda_topics": {
+    "topic_1": [
+      "flight",
+      "plane",
+      "gate",
+      "delay",
+      "hour",
+      "agent",
+      "bags",
+      "seats"
+    ],
+    "topic_2": [
+      "flight",
+      "luggage",
+      "thanks",
+      "dfw",
+      "days",
+      "hrs",
+      "today",
+      "hours"
+    ],
+    "topic_3": [
+      "airline",
+      "aa",
+      "time",
+      "ticket",
+      "response",
+      "experience",
+      "anything",
+      "miles"
+    ],
+    "topic_4": [
+      "hold",
+      "hours",
+      "phone",
+      "flight",
+      "help",
+      "call",
+      "hour",
+      "someone"
+    ],
+    "topic_5": [
+      "service",
+      "customer",
+      "bag",
+      "customers",
+      "agents",
+      "people",
+      "baggage",
+      "line"
+    ],
+    "topic_6": [
+      "flight",
+      "cancelled",
+      "flights",
+      "flightled",
+      "tomorrow",
+      "seat",
+      "hours",
+      "flighted"
+    ]
+  },
+  "negativereason_top5": {
+    "Customer Service Issue": 2910,
+    "Late Flight": 1665,
+    "Can't Tell": 1190,
+    "Cancelled Flight": 847,
+    "Lost Luggage": 724
+  }
+}
