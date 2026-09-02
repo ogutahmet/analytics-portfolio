@@ -1,0 +1,51 @@
+{
+  "class_counts": {
+    "ants": 498,
+    "bees": 500,
+    "grasshopper": 484,
+    "moth": 496,
+    "wasp": 497
+  },
+  "n_images": 2475,
+  "split_sizes": {
+    "train": 1732,
+    "val": 371,
+    "test": 372
+  },
+  "model_1_simple_cnn": {
+    "test_accuracy": 0.5968,
+    "cohen_kappa": 0.4953,
+    "per_class_f1": {
+      "ants": 0.56,
+      "bees": 0.554,
+      "grasshopper": 0.297,
+      "moth": 0.663,
+      "wasp": 0.787
+    },
+    "epochs_trained": 25
+  },
+  "model_2_deeper_cnn": {
+    "test_accuracy": 0.664,
+    "cohen_kappa": 0.5797,
+    "per_class_f1": {
+      "ants": 0.609,
+      "bees": 0.629,
+      "grasshopper": 0.437,
+      "moth": 0.735,
+      "wasp": 0.877
+    },
+    "epochs_trained": 32
+  },
+  "model_3_transfer_learning": {
+    "test_accuracy": 0.9597,
+    "cohen_kappa": 0.9496,
+    "per_class_f1": {
+      "ants": 0.973,
+      "bees": 0.939,
+      "grasshopper": 0.951,
+      "moth": 0.987,
+      "wasp": 0.948
+    },
+    "epochs_trained": 31
+  }
+}
