@@ -6,5 +6,6 @@ A collection of data analysis and machine learning projects, most of them starte
 
 - [Airline Tweet Sentiment and Topic Analysis](projects/airline-tweet-sentiment-analysis/) — sentiment prediction, lexicon based scoring, and topic modeling on the Twitter US Airline Sentiment dataset.
 - [Delhi Weather Forecasting](projects/delhi-weather-forecasting/) — LSTM temperature forecasting checked against a naive baseline, comparing a model trained on temperature alone against one trained on several weather variables.
+- [Agricultural Pest Image Classification](projects/agricultural-pest-classification/) — comparing two convolutional networks trained from scratch against a transfer learning model on a small image dataset.
 
 More projects will be added here over time.
