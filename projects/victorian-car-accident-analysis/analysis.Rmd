@@ -1,0 +1,149 @@
+---
+title: "Victorian Car Accident Severity Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = "figures/", warning = FALSE, message = FALSE)
+```
+
+## Loading and tidying the data
+
+The raw file has a header spanning two rows: one row naming each of Victoria's seven road safety regions, and a second row naming the four severity categories (Fatal, Serious, No Injury, Other) repeated once per region. That's a wide format with 28 data columns for a single daily count. Rather than building each region's data frame by hand with `cbind`, which is what the original version of this analysis did across roughly 80 lines of repetitive code, a single `pivot_longer` reshapes the whole file at once.
+
+```{r libraries}
+library(tidyverse)
+library(lubridate)
+library(fitdistrplus)
+library(MASS)
+```
+
+```{r load}
+region_names <- c("Eastern", "Metropolitan North West", "Metropolitan South East",
+                   "North Eastern", "Northern", "South Western", "Western")
+severity_names <- c("Fatal", "Serious", "NoInjury", "Other")
+
+raw <- read_csv("data/car_accidents_victoria.csv", skip = 2, col_names = FALSE, show_col_types = FALSE)
+colnames(raw) <- c("Date", paste(rep(region_names, each = 4), rep(severity_names, times = 7), sep = "__"))
+raw$Date <- as.Date(raw$Date, format = "%d/%m/%Y")
+
+accidents_long <- raw %>%
+  pivot_longer(-Date, names_to = c("Region", "Severity"), names_sep = "__", values_to = "Count")
+
+cat("Rows:", nrow(raw), " Date range:", format(min(raw$Date)), "to", format(max(raw$Date)), "\n")
+```
+
+## Missing values
+
+The original version of this analysis replaced the literal string `'N/A'` with `NA` before converting two of the seven regions' columns to numeric, and mean-imputed only those two. Checking the raw file directly shows why that step didn't do much: the string `"N/A"` doesn't appear anywhere in the file at all. The real gaps are blank cells, which `read_csv` already parses as `NA` on load.
+
+```{r missing}
+n_missing <- sum(is.na(accidents_long$Count))
+cat("Missing values:", n_missing, "out of", nrow(accidents_long), "cells\n")
+accidents_long %>% filter(is.na(Count)) %>% count(Region, Severity)
+```
+
+Five missing cells out of just over 51,000, spread across regions the original version never checked. Since this is a handful of blank days in a count series, each is filled with the rounded mean for that region and severity column, applied consistently across all seven regions rather than the two the original happened to check.
+
+```{r impute}
+accidents_long <- accidents_long %>%
+  group_by(Region, Severity) %>%
+  mutate(Count = ifelse(is.na(Count), round(mean(Count, na.rm = TRUE)), Count)) %>%
+  ungroup()
+```
+
+## Daily totals by region
+
+```{r daily-totals}
+daily_totals <- accidents_long %>%
+  group_by(Date, Region) %>%
+  summarise(Total_accidents = sum(Count), .groups = "drop") %>%
+  mutate(Weekday = factor(wday(Date, label = TRUE, week_start = 1), ordered = FALSE))
+```
+
+```{r plot-statewide, fig.width=10, fig.height=4}
+daily_totals %>%
+  group_by(Date) %>%
+  summarise(Total = sum(Total_accidents)) %>%
+  ggplot(aes(x = Date, y = Total)) +
+  geom_line(color = "#2E5A87", linewidth = 0.3) +
+  labs(title = "Daily accidents across Victoria, all regions combined",
+       y = "Accidents per day", x = NULL) +
+  theme_minimal()
+```
+
+```{r plot-by-region, fig.width=9, fig.height=5}
+daily_totals %>%
+  group_by(Region) %>%
+  summarise(Average_daily = mean(Total_accidents)) %>%
+  ggplot(aes(x = reorder(Region, Average_daily), y = Average_daily)) +
+  geom_col(fill = "#5B9BD5") +
+  coord_flip() +
+  labs(title = "Average daily accidents by region", x = NULL, y = "Average accidents per day") +
+  theme_minimal()
+```
+
+Metropolitan South East and Metropolitan North West run well ahead of the other five regions, which line up with population density rather than anything specific to road conditions in those areas.
+
+```{r plot-weekday, fig.width=9, fig.height=5}
+daily_totals %>%
+  ggplot(aes(x = Weekday, y = Total_accidents)) +
+  geom_violin(fill = "#9DC3E6") +
+  facet_wrap(~Region, scales = "free_y") +
+  labs(title = "Daily accident counts by weekday, per region", y = "Accidents", x = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Choosing a distribution for daily accident counts
+
+The original version sampled 200 rows from a single region, fit a Poisson and a negative binomial to `Total_accidents` for that sample, correctly noted count data calls for a count distribution, and then, without explanation, switched to fitting Weibull, gamma, and exponential distributions (all of which are for continuous data) to an unrelated column, `Other / 10`. That's fitting the wrong family of distribution to a variable that was never the one being investigated. Here, the comparison stays on `Total_accidents`, statewide, using the full five years of data rather than a 200-row sample.
+
+```{r cullen-frey, fig.width=7, fig.height=6}
+statewide_daily <- daily_totals %>%
+  group_by(Date) %>%
+  summarise(Total = sum(Total_accidents))
+
+descdist(statewide_daily$Total, boot = 500)
+```
+
+```{r fit-distributions}
+pois_fit <- fitdist(statewide_daily$Total, "pois")
+nbinom_fit <- fitdist(statewide_daily$Total, "nbinom")
+
+gof <- gofstat(list(pois_fit, nbinom_fit), fitnames = c("Poisson", "Negative binomial"))
+gof$aic
+```
+
+```{r compare-fits, fig.width=9, fig.height=6}
+denscomp(list(pois_fit, nbinom_fit), legendtext = c("Poisson", "Negative binomial"))
+```
+
+```{r variance-check}
+cat("Mean:", round(mean(statewide_daily$Total), 2), " Variance:", round(var(statewide_daily$Total), 2), "\n")
+```
+
+The variance is well above the mean, which is exactly the condition (overdispersion) a Poisson distribution can't represent, since it forces mean and variance to be equal. The negative binomial fit's AIC comes in well below the Poisson fit's, confirming what the ratio of variance to mean already suggests.
+
+## Extending the analysis: does the day of the week actually matter?
+
+The original analysis stopped at fitting a distribution to one region's sample. Having seen a weekday pattern in the violin plots above, and knowing the negative binomial is the family that fits better, a natural next question is whether that weekday effect is real once region differences are accounted for, rather than just a visual impression from the plots.
+
+```{r nb-glm}
+nb_model <- glm.nb(Total_accidents ~ Weekday + Region, data = daily_totals)
+summary(nb_model)
+```
+
+```{r irr}
+irr <- exp(coef(nb_model))
+round(sort(irr[grepl("Weekday", names(irr))], decreasing = TRUE), 3)
+```
+
+Each of these is the rate of accidents on that day relative to Monday (the reference level), holding region constant. Friday runs about 16% higher than Monday, the largest gap of the week; Sunday is the only day lower than Monday, though at roughly 3% lower it isn't a statistically significant difference. None of this changes which distribution fits best, but it does turn "the data looks like it varies by weekday" from a visual impression in the violin plots into an actual estimate of how much, controlling for the fact that some regions simply carry more traffic than others.
+
+## Summary
+
+- Tidying 28 wide columns into one long data frame took a `pivot_longer` call instead of building each region by hand; the original's manual approach happened to still work, but only because of R's recycling rules doing something the code didn't actually ask for.
+- The dataset has 5 missing cells in total, none of them the literal `"N/A"` string the original code was checking for. All five are now imputed consistently, rather than two regions being checked and five being skipped silently.
+- Total accidents statewide are overdispersed (variance far exceeds the mean), so a negative binomial distribution fits meaningfully better than a Poisson one by AIC. The original's distribution comparison was never actually run on the right variable to notice this.
+- A negative binomial regression on weekday and region shows a real weekday effect that survives controlling for region: Friday runs about 16% higher than Monday, and Sunday is the only day at or below Monday's rate. The original stopped short of testing this.
