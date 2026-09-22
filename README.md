@@ -8,5 +8,6 @@ A collection of data analysis and machine learning projects, most of them starte
 - [Delhi Weather Forecasting](projects/delhi-weather-forecasting/) — LSTM temperature forecasting checked against a naive baseline, comparing a model trained on temperature alone against one trained on several weather variables.
 - [Agricultural Pest Image Classification](projects/agricultural-pest-classification/) — comparing two convolutional networks trained from scratch against a transfer learning model on a small image dataset.
 - [Victorian Car Accident Severity Analysis](projects/victorian-car-accident-analysis/) — distribution fitting and a negative binomial regression on five years of road accident data (R).
+- [Melbourne Heat and Road Accidents](projects/melbourne-heat-and-accidents/) — a properly computed Excess Heat Factor and GAM regression testing whether heatwaves predict accidents once trend and season are accounted for (R).
 
 More projects will be added here over time.
