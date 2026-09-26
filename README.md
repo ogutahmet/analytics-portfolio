@@ -9,5 +9,6 @@ A collection of data analysis and machine learning projects, most of them starte
 - [Agricultural Pest Image Classification](projects/agricultural-pest-classification/) — comparing two convolutional networks trained from scratch against a transfer learning model on a small image dataset.
 - [Victorian Car Accident Severity Analysis](projects/victorian-car-accident-analysis/) — distribution fitting and a negative binomial regression on five years of road accident data (R).
 - [Melbourne Heat and Road Accidents](projects/melbourne-heat-and-accidents/) — a properly computed Excess Heat Factor and GAM regression testing whether heatwaves predict accidents once trend and season are accounted for (R).
+- [Forest Fire Moisture Code Aggregation](projects/forest-fire-moisture-index/) — weighted aggregation functions (weighted means, OWA, Choquet integral) versus linear regression for predicting a fire weather index (R).
 
 More projects will be added here over time.
