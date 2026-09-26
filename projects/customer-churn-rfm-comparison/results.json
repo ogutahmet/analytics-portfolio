@@ -1,0 +1,96 @@
+{
+  "n_train": 20000,
+  "n_test": 10000,
+  "train_churn_rate": 0.4279,
+  "test_churn_rate": 0.4251,
+  "test_rows_missing_socioeconomic": 4,
+  "logistic_regression": {
+    "confusion_matrix": {
+      "tn": 4754,
+      "fp": 995,
+      "fn": 1110,
+      "tp": 3141
+    },
+    "accuracy": 0.7895,
+    "sensitivity": 0.7389,
+    "specificity": 0.8269,
+    "coefficients": {
+      "Purchase": -0.3208,
+      "T.last": -1.2265,
+      "T.active": 0.137,
+      "Loyalty": -0.27,
+      "ServiceFailure": 0.0349,
+      "TotalProfit": -0.1572,
+      "AP_spent": 0.0116,
+      "BH_spent": 0.0078,
+      "DL_spent": 0.061,
+      "DY_spent": 0.0091,
+      "FV_spent": 0.0134,
+      "GM_spent": 0.009,
+      "GR_spent": -0.2938,
+      "LQ_spent": -0.0478,
+      "MT_spent": 0.0435,
+      "SocioEconomic": -0.023
+    },
+    "intercept": -0.5111
+  },
+  "lift_chart": {
+    "decile": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "logistic_regression_pct_churners_captured": [
+      19.78,
+      38.81,
+      56.34,
+      71.98,
+      83.63,
+      91.04,
+      95.53,
+      98.26,
+      99.6,
+      100.0
+    ],
+    "rfm_pct_churners_captured": [
+      18.8,
+      37.83,
+      55.54,
+      70.41,
+      80.92,
+      90.28,
+      95.32,
+      98.35,
+      99.74,
+      100.0
+    ],
+    "random_pct_churners_captured": [
+      10.0,
+      20.0,
+      30.0,
+      40.0,
+      50.0,
+      60.0,
+      70.0,
+      80.0,
+      90.0,
+      100.0
+    ]
+  },
+  "one_customer_dropped_replication": {
+    "description": "Same model, trained on 19,999 of the 20,000 customers (the actual scale of the original's alignment defect), to check whether it mattered",
+    "accuracy": 0.7896,
+    "accuracy_difference_vs_full_data": -0.0001
+  },
+  "fully_decoupled_hypothetical": {
+    "description": "Hypothetical worse case: every row's X paired with a different customer's y, for contrast with what the original's actual defect looked like",
+    "accuracy": 0.5745
+  }
+}
